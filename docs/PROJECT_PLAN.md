@@ -1,3 +1,7 @@
+## Version
+
+v0.1.0-alpha
+
 # SmartApply
 
 ## Vision
@@ -87,3 +91,21 @@ Set up Better Auth
 - ATS Resume Score
 - AI Cover Letter
 - AI Interview Coach
+
+## Phase 1 - Foundation
+
+- [x] Initialize Next.js project
+- [x] Configure GitHub repository
+- [x] Configure Prisma
+- [x] Connect Neon database
+- [x] Configure Better Auth
+- [x] Create database schema
+- [x] Apply initial migration
+- [x] Configure authentication API
+- [x] Install shadcn/ui
+- [x] Install React Hook Form
+- [x] Install Zod
+
+## Current Sprint
+
+🔄 Build user registration
