@@ -140,3 +140,17 @@ Planned integrations
 - Vector Search
 - Background Jobs
 - Email Notifications
+
+## Deployment
+
+SmartApply is deployed using Vercel.
+
+Production flow:
+
+GitHub (feature/auth)
+↓
+Vercel Build
+↓
+Next.js Application
+↓
+Neon PostgreSQL Database
