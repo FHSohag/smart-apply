@@ -6,7 +6,7 @@ export interface Resume {
   publicId: string;
   fileSize: number;
   mimeType: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   userId: string;
 }
