@@ -1,8 +1,11 @@
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import { LogoutButton } from "@/components/auth/logout-button";
+import { getUserResumes } from "@/services/resume.service";
+
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { ResumeList } from "@/components/resume/resume-list";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -13,17 +16,23 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const resumes = await getUserResumes(session.user.id);
+
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="text-3xl font-bold">Welcome, {session.user.name}</h1>
+    <main className="container mx-auto max-w-7xl px-6 py-10">
+      <DashboardHeader user={session.user} />
 
-      <p className="mt-2 text-muted-foreground">
-        You are logged in to SmartApply.
-      </p>
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold">
+          My Resumes ({resumes.length})
+        </h2>
 
-      <div className="mt-6">
-        <LogoutButton />
+        <p className="text-muted-foreground">
+          Your uploaded resumes are shown below.
+        </p>
       </div>
+
+      <ResumeList resumes={resumes} />
     </main>
   );
 }
