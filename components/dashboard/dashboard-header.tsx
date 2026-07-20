@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { UploadResumeDialog } from "@/components/resume/upload-resume-dialog";
 import { LogoutButton } from "@/components/auth/logout-button";
 
@@ -8,9 +9,10 @@ interface DashboardHeaderProps {
     email: string;
     image?: string | null;
   };
+  hasResume: boolean;
 }
 
-export function DashboardHeader({ user }: DashboardHeaderProps) {
+export function DashboardHeader({ user, hasResume }: DashboardHeaderProps) {
   const initials =
     user.name
       ?.split(" ")
@@ -30,7 +32,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       </div>
 
       <div className="flex items-center gap-4">
-        <UploadResumeDialog />
+        {!hasResume && <UploadResumeDialog />}
 
         <div className="flex items-center gap-3 rounded-lg border px-3 py-2">
           <Avatar className="h-10 w-10">
@@ -38,14 +40,13 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
 
-          <div className="hidden text-left sm:block">
-            <p className="font-medium leading-none">{user.name}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
+          <div className="hidden sm:block">
+            <p className="font-medium">{user.name}</p>
+
+            <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
 
-          <form action="/api/auth/sign-out" method="POST">
-            <LogoutButton />
-          </form>
+          <LogoutButton />
         </div>
       </div>
     </header>

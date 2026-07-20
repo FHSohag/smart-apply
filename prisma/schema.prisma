@@ -83,6 +83,9 @@ model Resume {
   fileSize      Int
   mimeType      String
 
+  extractedText String?
+  parsedAt      DateTime?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

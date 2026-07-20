@@ -81,3 +81,52 @@ export async function getUserResumes(userId: string) {
     },
   });
 }
+
+export async function getResumeByUserId(userId: string) {
+  return prisma.resume.findFirst({
+    where: {
+      userId,
+    },
+  });
+}
+
+export async function getResumeById(
+  id: string,
+  userId: string
+) {
+  return prisma.resume.findFirst({
+    where: {
+      id,
+      userId,
+    },
+  });
+}
+
+export async function deleteResume(id: string) {
+  return prisma.resume.delete({
+    where: {
+      id,
+    },
+  });
+}
+
+export async function deleteResumeFromCloudinary(publicId: string) {
+  return cloudinary.uploader.destroy(publicId, {
+    resource_type: "raw",
+  });
+}
+
+export async function updateResumeParsing(
+  id: string,
+  extractedText: string
+) {
+  return prisma.resume.update({
+    where: {
+      id,
+    },
+    data: {
+      extractedText,
+      parsedAt: new Date(),
+    },
+  });
+}

@@ -20,7 +20,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="container mx-auto max-w-7xl px-6 py-10">
-      <DashboardHeader user={session.user} />
+      <DashboardHeader user={session.user} hasResume={resumes.length > 0} />
 
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">

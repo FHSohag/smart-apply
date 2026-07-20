@@ -4,9 +4,13 @@ import { auth } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/api-response";
 import {
   createResume,
+  getResumeByUserId,
   getUserResumes,
+  updateResumeParsing,
   uploadResumeToCloudinary,
 } from "@/services/resume.service";
+
+import { extractResumeText } from "@/services/resume-parser.service";
 
 export async function GET() {
   try {
@@ -51,6 +55,16 @@ export async function POST(request: Request) {
       return errorResponse("Resume file is required.");
     }
 
+    // Prevent multiple resumes per user
+    const existingResume = await getResumeByUserId(session.user.id);
+
+    if (existingResume) {
+      return errorResponse(
+        "You already have a resume. Delete it before uploading another one.",
+        409
+      );
+    }
+
     const uploaded = await uploadResumeToCloudinary(file);
 
     const resume = await createResume({
@@ -62,6 +76,18 @@ export async function POST(request: Request) {
       mimeType: file.type,
       userId: session.user.id,
     });
+
+    // Parse the uploaded resume
+    const extractedText = await extractResumeText(
+      resume.fileUrl,
+      resume.mimeType
+    );
+
+    // Save parsing result
+    await updateResumeParsing(
+      resume.id,
+      extractedText
+    );
 
     return successResponse(
       resume,
