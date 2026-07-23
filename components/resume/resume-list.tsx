@@ -1,3 +1,5 @@
+import { FileText } from "lucide-react";
+
 import { Resume } from "@/types/resume";
 import { ResumeCard } from "./resume-card";
 
@@ -8,10 +10,12 @@ interface ResumeListProps {
 export function ResumeList({ resumes }: ResumeListProps) {
   if (resumes.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <h2 className="text-lg font-semibold">No resumes yet</h2>
+      <div className="rounded-lg border border-dashed border-[rgba(246,244,236,0.15)] bg-[rgba(246,244,236,0.02)] p-12 text-center">
+        <FileText className="mx-auto mb-4 h-10 w-10 text-[#A8B0C3]/60" />
 
-        <p className="mt-2 text-muted-foreground">
+        <h2 className="text-lg font-semibold text-[#F6F4EC]">No resumes yet</h2>
+
+        <p className="mt-2 text-[#A8B0C3]">
           Upload your first resume to get started.
         </p>
       </div>

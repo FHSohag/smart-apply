@@ -2,12 +2,15 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/api-response";
+
 import {
   createResume,
+  deleteResumeFromCloudinary,
   getResumeByUserId,
   getUserResumes,
   updateResumeParsing,
   uploadResumeToCloudinary,
+  deleteResume
 } from "@/services/resume.service";
 
 import { extractResumeText } from "@/services/resume-parser.service";
@@ -65,8 +68,10 @@ export async function POST(request: Request) {
       );
     }
 
+    // Upload to Cloudinary
     const uploaded = await uploadResumeToCloudinary(file);
 
+    // Create database record
     const resume = await createResume({
       title,
       originalName: file.name,
@@ -77,23 +82,38 @@ export async function POST(request: Request) {
       userId: session.user.id,
     });
 
-    // Parse the uploaded resume
-    const extractedText = await extractResumeText(
-      resume.fileUrl,
-      resume.mimeType
-    );
+    try {
+      // Parse resume
+      const extractedText = await extractResumeText(
+        resume.fileUrl,
+        resume.mimeType
+      );
 
-    // Save parsing result
-    await updateResumeParsing(
-      resume.id,
-      extractedText
-    );
+      // Save extracted text
+      const parsedResume = await updateResumeParsing(
+        resume.id,
+        extractedText
+      );
 
-    return successResponse(
-      resume,
-      "Resume uploaded successfully.",
-      201
-    );
+      return successResponse(
+        parsedResume,
+        "Resume uploaded successfully.",
+        201
+      );
+    } catch (error) {
+      console.error("Resume parsing failed:", error);
+
+      // Roll back database
+      await deleteResume(resume.id);
+
+      // Roll back Cloudinary
+      await deleteResumeFromCloudinary(resume.publicId);
+
+      return errorResponse(
+        "Unable to process the uploaded resume. Please upload another resume or contact support.",
+        400
+      );
+    }
   } catch (error) {
     console.error(error);
 

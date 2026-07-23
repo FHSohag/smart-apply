@@ -97,46 +97,58 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
     }
   }
 
+  const inputClass =
+    "border-[rgba(246,244,236,0.15)] bg-[rgba(246,244,236,0.05)] text-[#F6F4EC] placeholder:text-[#A8B0C3]/60 focus-visible:ring-[#3FA796] focus-visible:border-[#3FA796]";
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="title">Resume Title</Label>
+        <Label htmlFor="title" className="text-[#F6F4EC]">
+          Resume Title
+        </Label>
 
         <Input
           id="title"
           placeholder="Software Engineer Resume"
           disabled={isUploading}
+          className={inputClass}
           {...register("title")}
         />
 
         {errors.title && (
-          <p className="text-sm text-destructive">{errors.title.message}</p>
+          <p className="text-sm text-red-400">{errors.title.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label>Resume File</Label>
+        <Label className="text-[#F6F4EC]">Resume File</Label>
 
-        <div className="rounded-lg border-2 border-dashed p-8 text-center">
-          <FileText className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+        <div className="rounded-lg border-2 border-dashed border-[rgba(246,244,236,0.15)] bg-[rgba(246,244,236,0.02)] p-8 text-center">
+          <FileText className="mx-auto mb-4 h-10 w-10 text-[#A8B0C3]/60" />
 
           {file ? (
             <>
-              <p className="font-medium">{file.name}</p>
+              <p className="font-medium text-[#F6F4EC]">{file.name}</p>
 
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-[#A8B0C3]">
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
 
-              <p className="mt-2 text-sm font-medium text-green-600">
-                ✓ Ready to upload
+              <p
+                className={`mt-2 text-sm font-medium ${
+                  isUploading ? "text-[#F3C77E]" : "text-[#3FA796]"
+                }`}
+              >
+                {isUploading
+                  ? "⏳ Uploading and analyzing..."
+                  : "✓ Ready to upload"}
               </p>
             </>
           ) : (
             <>
-              <p className="font-medium">Choose your resume</p>
+              <p className="font-medium text-[#F6F4EC]">Choose your resume</p>
 
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-[#A8B0C3]">
                 PDF or DOCX • Maximum 10MB
               </p>
             </>
@@ -148,12 +160,13 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
             type="file"
             accept=".pdf,.docx"
             onChange={handleFileChange}
+            disabled={isUploading}
           />
 
           <Button
             type="button"
             variant="outline"
-            className="mt-6"
+            className="cursor-pointer mt-6 border-[rgba(246,244,236,0.2)] bg-transparent text-[#F6F4EC] hover:bg-[rgba(246,244,236,0.08)] hover:text-[#F6F4EC]"
             disabled={isUploading}
             onClick={handleChooseFile}
           >
@@ -163,16 +176,26 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
         </div>
       </div>
 
-      <Button className="w-full" type="submit" disabled={isUploading}>
+      <Button
+        className="cursor-pointer w-full bg-[#3FA796] text-[#0B1220] hover:bg-[#3FA796]/90 disabled:opacity-60"
+        type="submit"
+        disabled={isUploading}
+      >
         {isUploading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Uploading...
+            Uploading and analyzing your resume...
           </>
         ) : (
           "Upload Resume"
         )}
       </Button>
+
+      {isUploading && (
+        <p className="text-center text-sm text-[#A8B0C3]">
+          This usually takes 5–15 seconds. Please don&apos;t close this page.
+        </p>
+      )}
     </form>
   );
 }

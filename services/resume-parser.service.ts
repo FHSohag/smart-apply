@@ -1,6 +1,8 @@
 import mammoth from "mammoth";
 import pdfParse from "pdf-parse";
 
+import { extractTextWithOCR } from "@/services/ocr.service";
+
 /**
  * Resume Parser Service
  *
@@ -47,12 +49,24 @@ async function downloadFile(fileUrl: string): Promise<Buffer> {
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
+    // First attempt: fast text extraction
     const { text } = await pdfParse(buffer);
 
-    const normalizedText = normalizeText(text);
+    let normalizedText = normalizeText(text);
 
+    // Fallback to OCR if no embedded text is found
     if (!normalizedText) {
-      throw new Error("Resume contains no readable text.");
+      console.log("No embedded text found. Falling back to OCR...");
+
+      const ocrText = await extractTextWithOCR(buffer);
+
+      normalizedText = normalizeText(ocrText);
+
+      if (!normalizedText) {
+        throw new Error("OCR could not extract readable text.");
+      }
+
+      console.log("OCR extraction completed successfully.");
     }
 
     return normalizedText;
