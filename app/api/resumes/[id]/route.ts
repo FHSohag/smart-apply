@@ -35,7 +35,7 @@ export async function DELETE(
       return errorResponse("Resume not found.", 404);
     }
 
-    await deleteResumeFromCloudinary(resume.publicId);
+    await deleteResumeFromCloudinary(resume.publicId, resume.mimeType);
 
     await deleteResume(resume.id);
 

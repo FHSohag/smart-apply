@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartApply",
+  title: "SmartApply | AI Powered Job Recommendations",
   description: "Easy job recommendations and resume building with AI",
 };
 

@@ -1,7 +1,7 @@
 import mammoth from "mammoth";
 import pdfParse from "pdf-parse";
 
-import { extractTextWithOCR } from "@/services/ocr.service";
+import { extractTextWithOCR, extractTextFromImage } from "@/services/ocr.service";
 
 /**
  * Resume Parser Service
@@ -21,6 +21,8 @@ export async function extractResumeText(
   fileUrl: string,
   mimeType: string
 ): Promise<string> {
+  console.log("Received mimeType:", mimeType);
+
   const buffer = await downloadFile(fileUrl);
 
   switch (mimeType) {
@@ -29,6 +31,10 @@ export async function extractResumeText(
 
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
       return extractDocxText(buffer);
+    
+    case "image/png":
+    case "image/jpeg":
+      return extractImageText(buffer);
 
     default:
       throw new Error("Unsupported resume format.");
@@ -94,6 +100,24 @@ async function extractDocxText(buffer: Buffer): Promise<string> {
     console.error("DOCX parsing failed:", error);
 
     throw new Error("Unable to parse DOCX resume.");
+  }
+}
+
+async function extractImageText(buffer: Buffer): Promise<string> {
+  try {
+    const ocrText = await extractTextFromImage(buffer);
+
+    const normalizedText = normalizeText(ocrText);
+
+    if (!normalizedText) {
+      throw new Error("OCR could not extract readable text from image.");
+    }
+
+    return normalizedText;
+  } catch (error) {
+    console.error("Image parsing failed:", error);
+
+    throw new Error("Unable to parse image resume.");
   }
 }
 

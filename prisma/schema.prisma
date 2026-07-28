@@ -84,6 +84,9 @@ model Resume {
   mimeType      String
 
   extractedText String?
+  structuredData Json?
+  embeddingSourceText String?
+  embedding     Unsupported("vector(768)")?
   parsedAt      DateTime?
 
   createdAt     DateTime @default(now())
@@ -93,4 +96,36 @@ model Resume {
   user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model JobPosting {
+  id           String   @id @default(cuid())
+
+  title        String
+  company      String
+  description  String
+
+  hardSkills   String[]
+  tools        String[]
+  softSkills   String[]
+  languages    String[]
+
+  minExperienceYears Int?
+
+  employmentType String
+
+  locationRaw     String?
+  locationCity    String?
+  locationCountry String?
+  isRemote        Boolean  @default(false)
+
+  embedding    Unsupported("vector(768)")?
+
+  postedAt     DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
 }

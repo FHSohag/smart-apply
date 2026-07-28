@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/api-response";
+import { ValidationError } from "@/lib/errors";
 
 import {
   createResume,
@@ -10,10 +11,15 @@ import {
   getUserResumes,
   updateResumeParsing,
   uploadResumeToCloudinary,
-  deleteResume
+  deleteResume,
+  saveResumeEmbedding,
 } from "@/services/resume.service";
 
 import { extractResumeText } from "@/services/resume-parser.service";
+import { structureResumeText } from "@/services/resume-structuring.service";
+import { generateResumeEmbedding } from "@/services/embedding.service";
+
+export const maxDuration = 60;
 
 export async function GET() {
   try {
@@ -89,11 +95,23 @@ export async function POST(request: Request) {
         resume.mimeType
       );
 
-      // Save extracted text
+      // Structure resume — required for embedding/matching, so a
+      // failure here fails the whole upload, same as a parsing failure
+      const structuredData = await structureResumeText(extractedText);
+
+      // Save extracted text + structured data
       const parsedResume = await updateResumeParsing(
         resume.id,
-        extractedText
+        extractedText,
+        structuredData
       );
+
+      // Generate and save embedding — required for AI-recommended
+      // job matching, so a failure here also fails the whole upload
+      const { embedding, sourceText } = await generateResumeEmbedding(
+        structuredData
+      );
+      await saveResumeEmbedding(resume.id, embedding, sourceText);
 
       return successResponse(
         parsedResume,
@@ -107,7 +125,7 @@ export async function POST(request: Request) {
       await deleteResume(resume.id);
 
       // Roll back Cloudinary
-      await deleteResumeFromCloudinary(resume.publicId);
+      await deleteResumeFromCloudinary(resume.publicId, resume.mimeType);
 
       return errorResponse(
         "Unable to process the uploaded resume. Please upload another resume or contact support.",
@@ -116,6 +134,10 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error(error);
+
+    if (error instanceof ValidationError) {
+      return errorResponse(error.message, 400);
+    }
 
     return errorResponse("Internal Server Error", 500);
   }

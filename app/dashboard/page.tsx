@@ -39,6 +39,22 @@ export default async function DashboardPage() {
       <main className="mx-auto max-w-7xl px-6 py-10">
         <DashboardHeader user={session.user} hasResume={resumes.length > 0} />
 
+        <div className="mb-10 flex gap-4">
+          <Link
+            href="/jobs"
+            className="rounded-lg border border-[rgba(246,244,236,0.2)] bg-transparent px-5 py-2.5 text-sm font-medium text-[#F6F4EC] hover:bg-[rgba(246,244,236,0.08)]"
+          >
+            Browse All Jobs
+          </Link>
+
+          <Link
+            href="/jobs/recommended"
+            className="rounded-lg bg-[#3FA796] px-5 py-2.5 text-sm font-medium text-[#0B1220] hover:bg-[#3FA796]/90"
+          >
+            AI Recommended Jobs
+          </Link>
+        </div>
+
         <div className="mb-6">
           <h2
             className="text-2xl font-medium tracking-tight text-[#F6F4EC]"

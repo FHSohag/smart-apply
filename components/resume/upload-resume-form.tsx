@@ -149,7 +149,7 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
               <p className="font-medium text-[#F6F4EC]">Choose your resume</p>
 
               <p className="mt-1 text-sm text-[#A8B0C3]">
-                PDF or DOCX • Maximum 10MB
+                PDF, DOCX, PNG, or JPG • Maximum 10MB
               </p>
             </>
           )}
@@ -158,7 +158,7 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
             ref={inputRef}
             hidden
             type="file"
-            accept=".pdf,.docx"
+            accept=".pdf,.docx,.png,.jpg,.jpeg"
             onChange={handleFileChange}
             disabled={isUploading}
           />
@@ -193,7 +193,8 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
 
       {isUploading && (
         <p className="text-center text-sm text-[#A8B0C3]">
-          This usually takes 5–15 seconds. Please don&apos;t close this page.
+          This can take up to 30–40 seconds for scanned or image-based resumes.
+          Please don&apos;t close this page.
         </p>
       )}
     </form>
