@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: [
     "pdf-parse",
     "tesseract.js",
+    "tesseract.js-core",
     "mupdf",
     "bmp-js",
     "wasm-feature-detect",
@@ -12,6 +13,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": [
       "./node_modules/tesseract.js/**/*",
+      "./node_modules/tesseract.js-core/**/*",
       "./node_modules/bmp-js/**/*",
       "./node_modules/wasm-feature-detect/**/*",
     ],
