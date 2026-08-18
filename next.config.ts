@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 
   outputFileTracingIncludes: {
     "/*": [
-      "./node_modules/tesseract.js/src/worker-script/**/*",
+      "./node_modules/tesseract.js/**/*",
     ],
   },
 };
