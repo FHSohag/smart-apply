@@ -15,6 +15,7 @@
     "@google/genai": "^2.13.0",
     "@hookform/resolvers": "^5.4.0",
     "@prisma/client": "^6.19.0",
+    "apify-client": "^2.23.4",
     "better-auth": "^1.6.23",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.10.0",
