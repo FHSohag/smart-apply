@@ -6,12 +6,14 @@ const nextConfig: NextConfig = {
     "tesseract.js",
     "mupdf",
     "bmp-js",
+    "wasm-feature-detect",
   ],
 
   outputFileTracingIncludes: {
     "/*": [
       "./node_modules/tesseract.js/**/*",
       "./node_modules/bmp-js/**/*",
+      "./node_modules/wasm-feature-detect/**/*",
     ],
   },
 };
