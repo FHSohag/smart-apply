@@ -27,6 +27,7 @@ export function ResumeFeedbackPanel({ resumeId }: { resumeId: string }) {
   const [status, setStatus] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [hasCheckedOnce, setHasCheckedOnce] = useState(false);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cancelledRef = useRef(false);
@@ -52,6 +53,7 @@ export function ResumeFeedbackPanel({ resumeId }: { resumeId: string }) {
         if (cancelledRef.current) return;
 
         setStatus(data.feedbackStatus);
+        setHasCheckedOnce(true);
 
         if (data.feedbackStatus === "completed") {
           setFeedback(data.feedback);
@@ -60,7 +62,7 @@ export function ResumeFeedbackPanel({ resumeId }: { resumeId: string }) {
           if (intervalRef.current) clearInterval(intervalRef.current);
         }
       } catch {
-        // Silent — will retry on next tick
+        // Silent — will retry on next tick, hasCheckedOnce stays as-is
       }
     }
 
@@ -101,6 +103,19 @@ export function ResumeFeedbackPanel({ resumeId }: { resumeId: string }) {
     } finally {
       setIsRetrying(false);
     }
+  }
+
+  // Haven't gotten a real answer yet — always show loading, never
+  // the retry state, even though `status` starts as null.
+  if (!hasCheckedOnce) {
+    return (
+      <div className="mb-10 rounded-lg border border-[rgba(246,244,236,0.1)] bg-[rgba(246,244,236,0.03)] p-6">
+        <div className="flex items-center gap-3 text-[#A8B0C3]">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <p>Loading resume feedback...</p>
+        </div>
+      </div>
+    );
   }
 
   if (status === "completed" && feedback) {
