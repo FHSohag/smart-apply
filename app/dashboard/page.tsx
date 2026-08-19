@@ -7,6 +7,7 @@ import { getUserResumes } from "@/services/resume.service";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { ResumeList } from "@/components/resume/resume-list";
+import { ResumeFeedbackPanel } from "@/components/resume/resume-feedback-panel";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -53,6 +54,13 @@ export default async function DashboardPage() {
           >
             AI Recommended Jobs
           </Link>
+
+          <Link
+            href="/applications"
+            className="rounded-lg border border-[rgba(246,244,236,0.2)] bg-transparent px-5 py-2.5 text-sm font-medium text-[#F6F4EC] hover:bg-[rgba(246,244,236,0.08)]"
+          >
+            Applied Jobs
+          </Link>
         </div>
 
         <div className="mb-6">
@@ -69,6 +77,12 @@ export default async function DashboardPage() {
         </div>
 
         <ResumeList resumes={resumes} />
+
+        <div className="mt-10">
+          {resumes.length > 0 && (
+            <ResumeFeedbackPanel resumeId={resumes[0].id} />
+          )}
+        </div>
       </main>
     </div>
   );

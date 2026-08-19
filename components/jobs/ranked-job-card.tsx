@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 import { JobCard } from "@/components/jobs/job-card";
 
 interface RankedJobCardProps {
+  id: string;
   title: string;
   company: string;
   description: string;
@@ -18,7 +21,11 @@ function scoreColor(score: number): string {
   return "#A8B0C3";
 }
 
-export function RankedJobCard({ matchScore, ...jobProps }: RankedJobCardProps) {
+export function RankedJobCard({
+  id,
+  matchScore,
+  ...jobProps
+}: RankedJobCardProps) {
   return (
     <div className="relative">
       <div
@@ -33,6 +40,13 @@ export function RankedJobCard({ matchScore, ...jobProps }: RankedJobCardProps) {
       </div>
 
       <JobCard {...jobProps} />
+
+      <Link
+        href={`/jobs/${id}/apply`}
+        className="mt-4 block w-full rounded-lg bg-[#3FA796] px-4 py-2 text-center text-sm font-medium text-[#0B1220] hover:bg-[#3FA796]/90"
+      >
+        Apply
+      </Link>
     </div>
   );
 }

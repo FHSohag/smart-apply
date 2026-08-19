@@ -80,6 +80,13 @@ export function UploadResumeForm({ onSuccess }: UploadResumeFormProps) {
 
       toast.success("Resume uploaded successfully!");
 
+      // Fire-and-forget: don't await, don't block the UI on this
+      fetch(`/api/resumes/${result.data.id}/generate-feedback`, {
+        method: "POST",
+      }).catch(() => {
+        // Silent — feedback failing shouldn't disrupt the upload success flow
+      });
+
       reset();
       setFile(null);
 

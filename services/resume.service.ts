@@ -1,6 +1,7 @@
 import { UploadApiResponse } from "cloudinary";
 import streamifier from "streamifier";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 import { cloudinary } from "@/lib/cloudinary";
 import { ValidationError } from "@/lib/errors";
@@ -161,4 +162,32 @@ export async function saveResumeEmbedding(
         "embeddingSourceText" = ${embeddingSourceText}
     WHERE id = ${resumeId}
   `;
+}
+
+export async function setResumeFeedbackPending(resumeId: string): Promise<void> {
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: { feedbackStatus: "pending", feedback: Prisma.JsonNull, feedbackGeneratedAt: null },
+  });
+}
+
+export async function saveResumeFeedback(
+  resumeId: string,
+  feedback: object
+): Promise<void> {
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: {
+      feedbackStatus: "completed",
+      feedback,
+      feedbackGeneratedAt: new Date(),
+    },
+  });
+}
+
+export async function markResumeFeedbackFailed(resumeId: string): Promise<void> {
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: { feedbackStatus: "failed" },
+  });
 }
