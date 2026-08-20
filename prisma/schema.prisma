@@ -99,6 +99,8 @@ model Resume {
   userId        String
   user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  jobFitFeedback JobFitFeedback[]
+
   @@index([userId])
 }
 
@@ -132,6 +134,7 @@ model JobPosting {
   updatedAt    DateTime @updatedAt
 
   applications Application[]
+  jobFitFeedback JobFitFeedback[]
 
   @@index([isActive])
 }
@@ -151,4 +154,22 @@ model Application {
 
   @@unique([userId, jobPostingId])
   @@index([userId])
+}
+
+model JobFitFeedback {
+  id           String   @id @default(cuid())
+
+  matchingStrengths String[]
+  skillGaps         String[]
+  suggestions       String[]
+
+  generatedAt  DateTime @default(now())
+
+  resumeId     String
+  resume       Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  jobPostingId String
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, jobPostingId])
 }

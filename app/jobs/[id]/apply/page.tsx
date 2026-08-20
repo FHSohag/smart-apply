@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { getResumeByUserId } from "@/services/resume.service";
 import { getExistingApplication } from "@/services/application.service";
 import { ApplyForm } from "@/components/jobs/apply-form";
+import { JobFitPanel } from "@/components/jobs/job-fit-panel";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -78,7 +79,13 @@ export default async function ApplyPage({ params }: PageProps) {
             </p>
           </div>
         ) : (
-          <ApplyForm jobId={job.id} />
+          <>
+            <div className="mt-6">
+              <JobFitPanel jobId={job.id} />
+            </div>
+
+            <ApplyForm jobId={job.id} />
+          </>
         )}
       </main>
     </div>
